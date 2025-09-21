@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -214,8 +213,9 @@
     </style>
 </head>
 <body>
-    
+
     <audio id="mySong" src="https://raw.githubusercontent.com/lemsiaicha948-cloud/Love-letter-for-skandourti/main/0201/Mitski%20-%20My%20Love%20Mine%20All%20Mine.mp3" preload="auto"></audio>
+
     <div class="kisses-container"></div>
     
     <div class="envelope-wrapper" onclick="openEnvelope()">
@@ -242,6 +242,7 @@
             const envelope = document.querySelector('.envelope');
             const letterPaper = document.querySelector('.letter-paper');
             const hearts = document.querySelectorAll('.heart');
+            const mySong = document.getElementById('mySong');
             
             envelope.classList.add('open');
             setTimeout(() => {
@@ -250,12 +251,19 @@
                     heart.style.animationPlayState = 'running';
                     heart.style.opacity = '1';
                 });
+
+                mySong.load();
+                mySong.oncanplaythrough = function() {
+                    mySong.currentTime = 36;
+                    mySong.play();
+                };
+                
             }, 500);
         }
 
         const kissesContainer = document.querySelector('.kisses-container');
         const numKisses = 30;
-        const emojis = ['😘', '💋', '❤️', '💖'];
+        const emojis = ['🫶', '💋', '❤️', '💖'];
 
         for (let i = 0; i < numKisses; i++) {
             const kiss = document.createElement('span');
@@ -270,3 +278,4 @@
 
 </body>
 </html>
+
