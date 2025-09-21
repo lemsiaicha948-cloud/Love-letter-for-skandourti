@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Your Special Letter!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap');
+
+        body {
+            background-color: #fce4ec; /* Baby pink */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Dancing Script', cursive; /* Cute and inviting font */
+            color: #800080; /* Romantic purple */
+            text-align: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+        }
+        h1 {
+            font-family: 'Amatic SC', cursive;
+            font-size: 3em;
+            color: #c71585; /* Deep pink */
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 12px 15px;
+            border: 2px solid #ff88a8; /* Pink border */
+            border-radius: 8px;
+            font-size: 1.2em;
+            width: 70%;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s ease;
+            font-family: 'Dancing Script', cursive;
+        }
+        input[type="text"]:focus {
+            border-color: #e91e63; /* Darker pink on focus */
+        }
+        button {
+            background-color: #ff69b4; /* Hot pink button */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            font-family: 'Dancing Script', cursive;
+        }
+        button:hover {
+            background-color: #e91e63; /* Darker hot pink on hover */
+            transform: translateY(-2px);
+        }
+        #message {
+            color: #e91e63; /* Red for error messages */
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Hello My Love!</h1>
+    <p>I have a special letter for you!</p>
+    <p>Enter our secret date (MMDD) to open it:</p>
+    <input type="text" id="secretCode" placeholder="e.g., 0201">
+    <button onclick="checkCode()">Open Letter</button>
+    <p id="message"></p>
+</div>
+
+<script>
+    const correctCode = "0201"; // The correct code is set here
+
+    function checkCode() {
+        const enteredCode = document.getElementById("secretCode").value;
+        const messageElement = document.getElementById("message");
+        const repoName = window.location.pathname.split('/')[1];
+
+        if (enteredCode === correctCode) {
+            // Redirect to the secret page
+            window.location.href = `https://${window.location.hostname}/${repoName}/${correctCode}/`;
+        } else {
+            messageElement.textContent = "Oops! That's not the right code. Try again!";
+        }
+    }
+</script>
+
+</body>
+</html>
