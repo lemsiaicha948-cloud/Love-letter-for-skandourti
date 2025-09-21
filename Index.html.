@@ -1,103 +1,182 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Find Your Special Letter!</title>
+    <title>A Special Letter Just for You!</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
 
         body {
             background-color: #fce4ec; /* Baby pink */
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            font-family: 'Dancing Script', cursive; /* Cute and inviting font */
-            color: #800080; /* Romantic purple */
+            overflow: hidden;
+            font-family: 'Amatic SC', cursive;
+            color: #800080;
             text-align: center;
         }
-        .container {
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            max-width: 400px;
-        }
-        h1 {
-            font-family: 'Amatic SC', cursive;
-            font-size: 3em;
-            color: #c71585; /* Deep pink */
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-        }
-        input[type="text"] {
-            padding: 12px 15px;
-            border: 2px solid #ff88a8; /* Pink border */
-            border-radius: 8px;
-            font-size: 1.2em;
-            width: 70%;
-            margin-bottom: 20px;
-            outline: none;
-            transition: border-color 0.3s ease;
-            font-family: 'Dancing Script', cursive;
-        }
-        input[type="text"]:focus {
-            border-color: #e91e63; /* Darker pink on focus */
-        }
-        button {
-            background-color: #ff69b4; /* Hot pink button */
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.3em;
+
+        .envelope-wrapper {
+            position: relative;
+            width: 450px; /* Made bigger */
+            height: 300px; /* Made bigger */
+            filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.3));
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            font-family: 'Dancing Script', cursive;
+            transform: scale(0.9);
         }
-        button:hover {
-            background-color: #e91e63; /* Darker hot pink on hover */
-            transform: translateY(-2px);
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #ffb6c1; /* Light pink for envelope body */
+            border-radius: 15px;
+            transition: transform 1s ease-in-out;
         }
-        #message {
-            color: #e91e63; /* Red for error messages */
-            margin-top: 15px;
-            font-size: 1.1em;
+
+        .envelope.open {
+            transform: translateY(-80px); /* Move envelope up when open */
+        }
+
+        .envelope:before { /* Bottom flap */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 225px solid transparent;
+            border-right: 225px solid transparent;
+            border-top: 150px solid #ff9dbd;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 2;
+        }
+
+        .envelope:after { /* Top flap */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 225px solid transparent;
+            border-right: 225px solid transparent;
+            border-bottom: 150px solid #ff88a8;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            transform-origin: top;
+            transition: transform 0.5s ease-in-out;
+            z-index: 4;
+        }
+
+        .envelope.open:after {
+            transform: rotateX(180deg); /* Open the top flap */
+        }
+
+        .heart {
+            position: absolute;
+            background-color: #e91e63;
+            width: 20px; /* Hearts are bigger */
+            height: 20px;
+            transform: rotate(-45deg);
+            z-index: 3;
+            animation: floatUp 4s ease-in-out infinite;
+            opacity: 0;
+        }
+        .heart:before, .heart:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #e91e63;
+            border-radius: 50%;
+        }
+        .heart:before { top: -10px; left: 0; }
+        .heart:after { left: 10px; top: 0; }
+
+        .heart-1 { top: 30px; left: 70px; animation-delay: 0s; }
+        .heart-2 { top: 45px; right: 90px; animation-delay: 0.5s; }
+        .heart-3 { bottom: 60px; left: 120px; animation-delay: 1s; }
+        .heart-4 { bottom: 35px; right: 60px; animation-delay: 1.5s; }
+        .heart-5 { top: 90px; left: 225px; animation-delay: 2s; }
+        .heart-6 { bottom: 75px; left: 280px; animation-delay: 2.5s;}
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(-45deg); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-150px) rotate(-45deg); opacity: 0; }
+        }
+
+        .letter-paper {
+            position: absolute;
+            top: 0;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            transform: translateY(180px) scale(0.9);
+            opacity: 0;
+            transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+            font-family: 'Amatic SC', cursive;
+            font-size: 2em; /* Font size increased */
+            line-height: 1.5;
+            color: #4a148c;
+            text-align: center;
+        }
+
+        .letter-paper.show {
+            transform: translateY(-80px) scale(1.1); /* Adjusted to look better */
+            opacity: 1;
+            z-index: 5;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Hello My Love!</h1>
-    <p>I have a special letter for you!</p>
-    <p>Enter our secret date (MMDD) to open it:</p>
-    <input type="text" id="secretCode" placeholder="e.g., 0201">
-    <button onclick="checkCode()">Open Letter</button>
-    <p id="message"></p>
+<div class="envelope-wrapper" onclick="openEnvelope()">
+    <div class="heart heart-1"></div>
+    <div class="heart heart-2"></div>
+    <div class="heart heart-3"></div>
+    <div class="heart heart-4"></div>
+    <div class="heart heart-5"></div>
+    <div class="heart heart-6"></div>
+    <div class="envelope"></div>
+    <div class="letter-paper">
+        <h2>Skandourti Nhebek Barcha Ya Rouhii</h2>
+        <p>
+            Skandourti nhebek barcha ya rouhii w raby ykhalik leyaa twa cv nhes fi rouhi khir mlberah w wet lberah bch nkamel na9ra ala rouhi w nhawel ama mch khtrni ena nheb ama ala khtrek enty nchallah fisa ma youfew hal 3ans khtrni feda mnhom alkher w kif toufew najem nwli cbn maak w nwliw ma badhna w najem hata nchouf kifh w nji bahdhek toull ena bli ysir ya rouhi omri ma nbed alik w omri ma nkhalik khtrni nhebek barcha wenty hyety lkolhaa w asln mnjmch nbed alik mnhbkch tkhamem jmla kima lberah li ena fdyt menk wala madech nhebek shih ena mara jyt 9otlk nheb ne5ou pause ama wlhy nhartha bessif tada w twahachtek alkherrrrr donc anseha l hkeya enou nbed alik wala nfd menek bhy ya rouhi!haya bisousss nhebek barchaaa(^3^)/
+        </p>
+        <div class="signature">Your Love</div>
+    </div>
 </div>
 
 <script>
-    const correctCode = "0201"; // The correct code is set here
+    function openEnvelope() {
+        const envelope = document.querySelector('.envelope');
+        const letterPaper = document.querySelector('.letter-paper');
+        const hearts = document.querySelectorAll('.heart');
 
-    function checkCode() {
-        const enteredCode = document.getElementById("secretCode").value;
-        const messageElement = document.getElementById("message");
-        const repoName = window.location.pathname.split('/')[1];
-
-        if (enteredCode === correctCode) {
-            // Redirect to the secret page
-            window.location.href = `https://${window.location.hostname}/${repoName}/${correctCode}/`;
-        } else {
-            messageElement.textContent = "Oops! That's not the right code. Try again!";
-        }
+        envelope.classList.add('open');
+        setTimeout(() => {
+            letterPaper.classList.add('show');
+            hearts.forEach(heart => {
+                heart.style.animationPlayState = 'running';
+                heart.style.opacity = '1';
+            });
+        }, 500);
     }
 </script>
 
 </body>
 </html>
+
