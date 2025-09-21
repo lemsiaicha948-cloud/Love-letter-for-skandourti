@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>A Special Letter Just for You!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+
+        body {
+            background-color: #fce4ec; /* Baby pink */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Prevent body scroll, allow inner elements to scroll */
+            font-family: 'Amatic SC', cursive;
+            color: #800080;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Kiss Emojis Background */
+        .kisses-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .kiss {
+            position: absolute;
+            font-size: 30px;
+            animation: fall linear infinite;
+            color: #ff69b4; /* Hot pink */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Soft glow */
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(120vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Envelope and Letter Styling */
+        .envelope-wrapper {
+            position: relative;
+            width: 90vw; /* Wider for mobile */
+            max-width: 500px; /* Max width for larger screens */
+            height: 60vw; /* Taller */
+            max-height: 350px;
+            filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.3));
+            cursor: pointer;
+            transform: scale(0.85); /* Slightly smaller initial scale */
+            transition: transform 0.5s ease;
+            z-index: 1;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1);
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #ffb6c1;
+            border-radius: 15px;
+            transition: transform 1s ease-in-out;
+        }
+
+        .envelope.open {
+            transform: translateY(-80px);
+        }
+
+        .envelope:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 50% solid transparent;
+            border-right: 50% solid transparent;
+            border-top: calc(100% / 3 * 2) solid #ff9dbd;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 2;
+        }
+
+        .envelope:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 50% solid transparent;
+            border-right: 50% solid transparent;
+            border-bottom: calc(100% / 3) solid #ff88a8;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            transform-origin: top;
+            transition: transform 0.5s ease-in-out;
+            z-index: 4;
+        }
+
+        .envelope.open:after {
+            transform: rotateX(180deg);
+        }
+
+        .heart {
+            position: absolute;
+            background-color: #e91e63;
+            width: 20px;
+            height: 20px;
+            transform: rotate(-45deg);
+            z-index: 3;
+            animation: floatUp 4s ease-in-out infinite;
+            opacity: 0;
+        }
+        .heart:before, .heart:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #e91e63;
+            border-radius: 50%;
+        }
+        .heart:before { top: -10px; left: 0; }
+        .heart:after { left: 10px; top: 0; }
+        /* Adjusted heart positions for better coverage on bigger envelope */
+        .heart-1 { top: 15%; left: 15%; animation-delay: 0s; }
+        .heart-2 { top: 20%; right: 20%; animation-delay: 0.5s; }
+        .heart-3 { bottom: 20%; left: 30%; animation-delay: 1s; }
+        .heart-4 { bottom: 15%; right: 15%; animation-delay: 1.5s; }
+        .heart-5 { top: 35%; left: 50%; animation-delay: 2s; }
+        .heart-6 { bottom: 25%; left: 70%; animation-delay: 2.5s;}
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(-45deg); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-150px) rotate(-45deg); opacity: 0; }
+        }
+
+        .letter-paper {
+            position: absolute;
+            top: 0;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 10px; /* Reduced padding slightly */
+            box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            transform: translateY(180px) scale(0.9);
+            opacity: 0;
+            transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+            font-family: 'Amatic SC', cursive;
+            line-height: 1.3; /* Adjusted line height */
+            color: #4a148c;
+            text-align: center;
+        }
+
+        .letter-paper.show {
+            transform: translateY(-80px) scale(1.1);
+            opacity: 1;
+            z-index: 5;
+            overflow: hidden; /* Hide overflow here */
+            display: flex; /* Use flexbox for inner text alignment */
+            flex-direction: column;
+        }
+        
+        .letter-text-content {
+            flex-grow: 1; /* Allows content to take available space */
+            overflow-y: auto; /* Enable vertical scrolling only for the text content */
+            padding: 5px; /* Inner padding for text */
+            box-sizing: border-box;
+            text-align: left;
+            font-size: clamp(1.2em, 2.8vw, 2em); /* More refined responsive font size for body */
+        }
+
+        .letter-text-content h2 {
+            font-size: clamp(1.5em, 3.5vw, 2.5em); /* Responsive font size for heading */
+            text-align: center;
+            margin: 5px 0 10px 0; /* Adjusted margins */
+            padding: 0;
+            line-height: 1.2;
+            color: #c71585;
+        }
+
+        .letter-text-content p {
+            margin-bottom: 5px; /* Reduce space between paragraphs */
+            text-align: left;
+            padding: 0;
+        }
+        
+        .letter-text-content .signature {
+            font-style: italic;
+            margin-top: 15px; /* Adjusted margin */
+            text-align: right;
+            font-size: clamp(1em, 2.5vw, 1.8em);
+            line-height: 1.2;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="kisses-container"></div>
+    
+    <div class="envelope-wrapper" onclick="openEnvelope()">
+        <div class="heart heart-1"></div>
+        <div class="heart heart-2"></div>
+        <div class="heart heart-3"></div>
+        <div class="heart heart-4"></div>
+        <div class="heart heart-5"></div>
+        <div class="heart heart-6"></div>
+        <div class="envelope"></div>
+        <div class="letter-paper">
+            <div class="letter-text-content">
+                <h2>Skandourti Nhebek Barcha Ya Rouhii</h2>
+                <p>
+                    Skandourti nhebek barcha ya rouhii w raby ykhalik leyaa twa cv nhes fi rouhi khir mlberah w wet lberah bch nkamel na9ra ala rouhi w nhawel ama mch khtrni ena nheb ama ala khtrek enty nchallah fisa ma youfew hal 3ans khtrni feda mnhom alkher w kif toufew najem nwli cbn maak w nwliw ma badhna w najem hata nchouf kifh w nji bahdhek toull ena bli ysir ya rouhi omri ma nbed alik w omri ma nkhalik khtrni nhebek barcha wenty hyety lkolhaa w asln mnjmch nbed alik mnhbkch tkhamem jmla kima lberah li ena fdyt menk wala madech nhebek shih ena mara jyt 9otlk nheb ne5ou pause ama wlhy nhartha bessif tada w twahachtek alkherrrrr donc anseha l hkeya enou nbed alik wala nfd menek bhy ya rouhi!haya bisousss nhebek barchaaa(^3^)/
+                </p>
+                <div class="signature">Your Love</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openEnvelope() {
+            const envelope = document.querySelector('.envelope');
+            const letterPaper = document.querySelector('.letter-paper');
+            const hearts = document.querySelectorAll('.heart');
+            // The kisses will be automatically generated by the script below
+            
+            envelope.classList.add('open');
+            setTimeout(() => {
+                letterPaper.classList.add('show');
+                hearts.forEach(heart => {
+                    heart.style.animationPlayState = 'running';
+                    heart.style.opacity = '1';
+                });
+            }, 500);
+        }
+
+        // Script to generate falling kisses
+        const kissesContainer = document.querySelector('.kisses-container');
+        const numKisses = 30; // Number of kisses
+        const emojis = ['😘', '💋', '❤️', '💖']; // Added more emoji variety
+
+        for (let i = 0; i < numKisses; i++) {
+            const kiss = document.createElement('span');
+            kiss.classList.add('kiss');
+            kiss.textContent = emojis[Math.floor(Math.random() * emojis.length)]; // Random emoji
+            kiss.style.left = `${Math.random() * 100}vw`;
+            kiss.style.animationDuration = `${Math.random() * 5 + 7}s`; // Slightly longer duration
+            kiss.style.animationDelay = `${Math.random() * 8}s`; // Longer delay range
+            kissesContainer.appendChild(kiss);
+        }
+    </script>
+
+</body>
+</html>
